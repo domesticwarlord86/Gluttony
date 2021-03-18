@@ -75,7 +75,7 @@ namespace Gluttony
 
         private void RemoveHooks()
         {
-            Logging.Write(Colors.Aquamarine, "Removing Gluttony Hook");A
+            Logging.Write(Colors.Aquamarine, "Removing Gluttony Hook");
             TreeHooks.Instance.RemoveHook("TreeStart", _coroutine);
         }
 
