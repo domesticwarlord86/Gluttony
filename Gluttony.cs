@@ -103,6 +103,7 @@ namespace Gluttony
                 if (!InventoryManager.FilledSlots.Any(i =>
                     i.RawItemId == 7059 || i.RawItemId == 19885 || i.RawItemId == 27960))
                 {
+                    Logging.Write(Colors.Aquamarine, "Spiritbound potions are enabled, but none in inventory.");
                     return false;
                 }
                 await DrinkPotion();

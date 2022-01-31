@@ -168,10 +168,10 @@
     <value>1</value>
   </data>
   <data name="spiritBindCheckBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 60</value>
+    <value>12, 37</value>
   </data>
   <data name="spiritBindCheckBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>133, 24</value>
+    <value>199, 24</value>
   </data>
   <data name="spiritBindCheckBox1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -198,7 +198,7 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>278, 96</value>
+    <value>280, 64</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>GluttonySettings</value>
