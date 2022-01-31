@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GluttonySettings));
             this.foodDropBox = new System.Windows.Forms.ComboBox();
             this.foodLabel = new System.Windows.Forms.Label();
+            this.spiritBindCheckBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // foodDropBox
@@ -46,17 +47,26 @@
             resources.ApplyResources(this.foodLabel, "foodLabel");
             this.foodLabel.Name = "foodLabel";
             // 
+            // spiritBindCheckBox1
+            // 
+            resources.ApplyResources(this.spiritBindCheckBox1, "spiritBindCheckBox1");
+            this.spiritBindCheckBox1.Name = "spiritBindCheckBox1";
+            this.spiritBindCheckBox1.UseVisualStyleBackColor = true;
+            this.spiritBindCheckBox1.CheckedChanged += new System.EventHandler(this.spiritBindCheckBox1_CheckedChanged);
+            // 
             // GluttonySettings
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.spiritBindCheckBox1);
             this.Controls.Add(this.foodLabel);
             this.Controls.Add(this.foodDropBox);
             this.Name = "GluttonySettings";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
+
+        private System.Windows.Forms.CheckBox spiritBindCheckBox1;
 
         #endregion
 

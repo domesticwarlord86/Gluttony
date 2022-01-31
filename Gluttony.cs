@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using TreeSharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using ff14bot.RemoteWindows;
 
 
 namespace Gluttony
@@ -25,7 +27,8 @@ namespace Gluttony
     {
         private Composite _coroutine;
         private GluttonySettings _settingsForm;
-        private static uint _buff = 48;
+        private static uint _foodBuff = 48;
+        private static uint _medBuff = 49;
 
         public override string Author { get { return "DomesticWarlord"; } }
         public override string Name => "Gluttony";
@@ -33,12 +36,7 @@ namespace Gluttony
         
         public override async void OnInitialize()
         {
-            /*
-            if (!Core.Player.HasAura(_buff))
-            {
-                await EatFood();
-            }*/
-            _coroutine = new Decorator(c => !Core.Player.HasAura(48), new ActionRunCoroutine(r => EatFood()));
+            _coroutine = new ActionRunCoroutine(r => PluginTask());
         }
 
         public override void OnEnabled()
@@ -84,10 +82,40 @@ namespace Gluttony
         private void OnBotStart(BotBase bot) { AddHooks(); }
 
         private void OnHooksCleared(object sender, EventArgs e) { RemoveHooks(); }
-        
+
+        internal async Task<bool> PluginTask()
+        {
+            if (Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen ||
+                MovementManager.IsMoving ||
+                MovementManager.IsOccupied) return true;
+
+            if (!Core.Player.HasAura(_foodBuff))
+            {
+                if (Settings.Instance.Id == 0 || !InventoryManager.FilledSlots.ContainsFooditem(Settings.Instance.Id))
+                {
+                    return false;
+                }
+                await EatFood();
+            }
+            
+            if (!Core.Player.HasAura(_medBuff) && Settings.Instance.SpiritPotionsEnabled)
+            {
+                if (!InventoryManager.FilledSlots.Any(i =>
+                    i.RawItemId == 7059 || i.RawItemId == 19885 || i.RawItemId == 27960))
+                {
+                    return false;
+                }
+                await DrinkPotion();
+            }
+            
+            
+            //Don't block the logic below us in the tree.
+            return false;
+        }
+
         private static async Task<bool> EatFood()
         {
-            if (!Core.Player.HasAura(_buff))
+            if (!Core.Player.HasAura(_foodBuff))
             {
                 if (Settings.Instance.Id == 0 || !InventoryManager.FilledSlots.ContainsFooditem(Settings.Instance.Id))
                 {
@@ -101,13 +129,34 @@ namespace Gluttony
 
                 Logging.Write(Colors.Aquamarine, "Gluttony: Eating " + item.Name);
                 item.UseItem();
-                await Coroutine.Wait(5000, () => Core.Player.HasAura(_buff));
+                await Coroutine.Wait(5000, () => Core.Player.HasAura(_foodBuff));
             }
             return true;
         }
-
         
+        private static async Task<bool> DrinkPotion()
+        {
+            if (!Settings.Instance.SpiritPotionsEnabled) return true;
+            if (!Core.Player.HasAura(_medBuff))
+            {
+                    
+                uint[] potions = new uint[] {7059, 19885,27960};
+                    
+                if (InventoryManager.FilledSlots.Any(i => potions.Contains(i.RawItemId)))
+                {
+                    var item = InventoryManager.FilledSlots.First(i => potions.Contains(i.RawItemId));
+                    if (item.CanUse())
+                    {
+                        Logging.Write(Colors.Aquamarine, "Gluttony: Drinking " + item.Name);
+                        item.UseItem();
+                    }
+                }
+                    
+            }
 
+
+            return true;
+        }
     }
     
     public static class Helpers 
@@ -127,5 +176,20 @@ namespace Gluttony
 
         [Setting]
         public uint Id { get; set; }
+        
+        private bool _spiritPotionEnabled;
+        [DefaultValue(false)]
+        public bool SpiritPotionsEnabled
+        {
+            get => _spiritPotionEnabled;
+            set
+            {
+                if (_spiritPotionEnabled != value)
+                {
+                    _spiritPotionEnabled = value;
+                    //Save();
+                }
+            }
+        }
     }
 }
