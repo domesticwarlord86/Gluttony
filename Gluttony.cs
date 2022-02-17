@@ -86,7 +86,6 @@ namespace Gluttony
         internal async Task<bool> PluginTask()
         {
             if (Core.Me.IsCasting || Core.Me.IsMounted || Core.Me.InCombat || Talk.DialogOpen ||
-                MovementManager.IsMoving ||
                 MovementManager.IsOccupied) return false;
 
             if (!Core.Player.HasAura(_foodBuff))
